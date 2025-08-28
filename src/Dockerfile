@@ -2,13 +2,9 @@
 FROM php:8.2-fpm
 
 # === Installer dépendances système ===
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    unzip \
-    git \
-    curl \
-    bash \
-    && docker-php-ext-install pdo pdo_pgsql
+RUN apt-get update
+RUN apt-get install -y libpq-dev unzip git curl bash
+RUN docker-php-ext-install pdo pdo_pgsql
 
 # === Installer Node.js & npm ===
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
