@@ -1,4 +1,4 @@
 [build]
 builder = "dockerfile"
-dockerfilePath = "docker/Dockerfile"
+dockerfilePath = "docker/dockerfile"
 context = "./src"
