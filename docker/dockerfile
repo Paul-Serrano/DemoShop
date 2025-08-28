@@ -24,8 +24,16 @@ RUN composer --version
 # === Créer le répertoire de travail ===
 WORKDIR /var/www/html
 
-# === Exposer le port Laravel ===
+# === Copier tout le projet ===
+COPY . .
+
+# === Installer dépendances PHP & Node et build front ===
+RUN composer install --no-dev --optimize-autoloader
+RUN npm install
+RUN npm run build
+
+# === Exposer un port Laravel dynamique ===
 EXPOSE 8000
 
-# === Entrypoint par défaut ===
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# === Entrypoint dynamique pour Railway et local ===
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
