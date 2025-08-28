@@ -18,26 +18,25 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # === Installer Composer ===
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# === Créer le répertoire de travail ===
+# === Répertoire de travail ===
 WORKDIR /var/www/html
 
-# === Copier uniquement les fichiers de dépendances en premier (cache) ===
-# (comme le context est ./src, ces fichiers existent bien à la racine du context)
+# === Copier fichiers de dépendances ===
 COPY composer.json composer.lock* ./
 COPY package.json package-lock.json* ./
 
-# === Installer dépendances PHP & Node ===
+# === Installer les dépendances PHP & Node ===
 RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 
-# === Copier tout le code Laravel (src/) ===
+# === Copier tout le code Laravel ===
 COPY . .
 
-# === Builder les assets ===
+# === Builder les assets frontend ===
 RUN npm run build
 
-# === Exposer un port Laravel dynamique ===
+# === Exposer un port dynamique pour Railway ===
 EXPOSE 8000
 
-# === Entrypoint dynamique pour Railway et local ===
+# === Entrypoint pour Railway ===
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
